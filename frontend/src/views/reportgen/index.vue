@@ -105,7 +105,7 @@ function resetFilters() {
 }
 
 function exportRows() {
-  downloadEntries(meta.key)
+  downloadEntries(meta.key, filters.value)
 }
 
 function openCreate() {

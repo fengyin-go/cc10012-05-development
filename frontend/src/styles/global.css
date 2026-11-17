@@ -35,3 +35,28 @@ body { margin: 0; background: #f6f8fb; color: #1f2937; }
 .error-text { color: #b42318; }
 .status-legend { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 10px; font-size: 12px; color: var(--muted); }
 .legend-item { background: #eef2f7; border-radius: 999px; padding: 2px 10px; }
+.panel { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; margin-top: 16px; }
+.panel-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.panel-head h3 { margin: 0 0 4px; font-size: 15px; }
+.panel-desc { color: var(--muted); font-size: 12px; margin: 0 0 8px; }
+.panel-desc code { background: #eef2f7; border-radius: 4px; padding: 1px 5px; }
+.stat-row.compact .stat-card { padding: 8px 10px; }
+.stat-row.compact .stat-value { font-size: 16px; }
+.badge { display: inline-block; background: #eef2f7; color: #334155; border-radius: 999px; font-size: 11px; padding: 1px 8px; margin-left: 4px; }
+.muted { color: var(--muted); font-size: 12px; }
+.block { display: block; margin-top: 2px; }
+.ok-text { color: #067647; }
+.warn-text { color: #b54708; margin-left: 6px; font-size: 12px; }
+.check-cell { width: 36px; text-align: center; }
+.row-selected { background: #f0f6ff; }
+.result-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
+.segmented { display: inline-flex; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.segmented-item { border: none; background: #fff; padding: 6px 12px; font-size: 12px; cursor: pointer; color: var(--muted); }
+.segmented-item.active { background: var(--brand); color: #fff; }
+.source-picker { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; font-size: 12px; }
+.source-chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border); border-radius: 999px; padding: 3px 10px; background: #f8fafc; }
+.source-chip.disabled { background: #fef2f2; border-color: #fecdca; }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.sample-detail { margin: 8px 0; font-size: 12px; }
+.sample-detail summary { cursor: pointer; color: var(--brand); margin-bottom: 6px; }
+.group-row td { background: #f1f5f9; font-size: 12px; }

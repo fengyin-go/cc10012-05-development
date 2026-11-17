@@ -57,3 +57,4 @@ export function resetRows(key: string): EntryRow[] {
 export function storageKey(): string {
   return STORAGE_KEY
 }
+

@@ -1,6 +1,9 @@
+import { SOURCE_SAMPLES } from './source-samples'
 import type { EntryRow } from './types'
 
 // 示例数据：首次打开时播种，之后浏览器里的改动优先，重置才会回到这份。
+// 数据源接入的三条配置与 source-samples.ts 里的源表样本对得上；
+// 数据导出的字段与本期「导出明细 = 列表」保持一致，方便核对。
 export const SEED_ROWS: Record<string, EntryRow[]> = {
   "query": [
     {
@@ -93,31 +96,31 @@ export const SEED_ROWS: Record<string, EntryRow[]> = {
   "source": [
     {
       "id": 1,
-      "status": "草稿",
-      "pending": true,
+      "status": "已连接",
+      "pending": false,
       "abnormal": false,
       "配置编号": "SOUR-0001",
-      "连接类型": "数据源接入样例1",
-      "接入地址": "数据源接入样例1",
-      "认证凭证": "数据源接入样例1",
-      "连接池大小": "数据源接入样例1",
-      "超时秒数": "数据源接入样例1",
-      "重试上限": "数据源接入样例1",
-      "负责人": "数据源接入样例1"
+      "连接类型": "PostgreSQL",
+      "接入地址": "pg-crm.internal:5432/crm_prod",
+      "认证凭证": "vault://source/sour-0001",
+      "连接池大小": "10",
+      "超时秒数": "30",
+      "重试上限": "3",
+      "负责人": "李维"
     },
     {
       "id": 2,
-      "status": "待校验",
-      "pending": true,
-      "abnormal": true,
+      "status": "已连接",
+      "pending": false,
+      "abnormal": false,
       "配置编号": "SOUR-0002",
-      "连接类型": "数据源接入样例2",
-      "接入地址": "数据源接入样例2",
-      "认证凭证": "数据源接入样例2",
-      "连接池大小": "数据源接入样例2",
-      "超时秒数": "数据源接入样例2",
-      "重试上限": "数据源接入样例2",
-      "负责人": "数据源接入样例2"
+      "连接类型": "MySQL",
+      "接入地址": "mysql-sales.internal:3306/sales_prod",
+      "认证凭证": "vault://source/sour-0002",
+      "连接池大小": "8",
+      "超时秒数": "20",
+      "重试上限": "2",
+      "负责人": "陈璐"
     },
     {
       "id": 3,
@@ -125,13 +128,13 @@ export const SEED_ROWS: Record<string, EntryRow[]> = {
       "pending": false,
       "abnormal": false,
       "配置编号": "SOUR-0003",
-      "连接类型": "数据源接入样例3",
-      "接入地址": "数据源接入样例3",
-      "认证凭证": "数据源接入样例3",
-      "连接池大小": "数据源接入样例3",
-      "超时秒数": "数据源接入样例3",
-      "重试上限": "数据源接入样例3",
-      "负责人": "数据源接入样例3"
+      "连接类型": "PostgreSQL",
+      "接入地址": "pg-dw.internal:5432/dw_analytics",
+      "认证凭证": "vault://source/sour-0003",
+      "连接池大小": "12",
+      "超时秒数": "45",
+      "重试上限": "3",
+      "负责人": "周行"
     }
   ],
   "aggregate": [
@@ -144,10 +147,10 @@ export const SEED_ROWS: Record<string, EntryRow[]> = {
       "聚合函数": "聚合计算样例1",
       "目标字段": "聚合计算样例1",
       "分组维度": "聚合计算样例1",
-      "时间窗口": "2026-09-01",
+      "时间窗口": "聚合计算样例1",
       "筛选条件": "聚合计算样例1",
       "输出精度": "聚合计算样例1",
-      "缓存时间": "2026-09-01"
+      "缓存时间": "聚合计算样例1"
     },
     {
       "id": 2,
@@ -158,10 +161,10 @@ export const SEED_ROWS: Record<string, EntryRow[]> = {
       "聚合函数": "聚合计算样例2",
       "目标字段": "聚合计算样例2",
       "分组维度": "聚合计算样例2",
-      "时间窗口": "2026-09-02",
+      "时间窗口": "聚合计算样例2",
       "筛选条件": "聚合计算样例2",
       "输出精度": "聚合计算样例2",
-      "缓存时间": "2026-09-02"
+      "缓存时间": "聚合计算样例2"
     },
     {
       "id": 3,
@@ -172,10 +175,10 @@ export const SEED_ROWS: Record<string, EntryRow[]> = {
       "聚合函数": "聚合计算样例3",
       "目标字段": "聚合计算样例3",
       "分组维度": "聚合计算样例3",
-      "时间窗口": "2026-09-03",
+      "时间窗口": "聚合计算样例3",
       "筛选条件": "聚合计算样例3",
       "输出精度": "聚合计算样例3",
-      "缓存时间": "2026-09-03"
+      "缓存时间": "聚合计算样例3"
     }
   ],
   "filter": [
@@ -430,7 +433,7 @@ export const SEED_ROWS: Record<string, EntryRow[]> = {
     {
       "id": 3,
       "status": "运行中",
-      "pending": false,
+      "pending": true,
       "abnormal": false,
       "节点编号": "PIPE-0003",
       "节点类型": "分析流水线样例3",
@@ -445,17 +448,17 @@ export const SEED_ROWS: Record<string, EntryRow[]> = {
   "datastore": [
     {
       "id": 1,
-      "status": "草稿",
-      "pending": true,
+      "status": "已生效",
+      "pending": false,
       "abnormal": false,
       "数据集编号": "DATA-0001",
-      "数据集名称": "数据集管理样例1",
-      "来源表名": "数据集管理样例1",
-      "字段列表": "数据集管理样例1",
-      "更新策略": "数据集管理样例1",
-      "数据采样比例": "数据集管理样例1",
-      "生命周期天数": "数据集管理样例1",
-      "缓存开关": "数据集管理样例1"
+      "数据集名称": "客户档案宽表",
+      "来源表名": "public.customer_profile",
+      "字段列表": "客户编码,客户名称,注册日期,信用额度,是否有效",
+      "更新策略": "每日全量",
+      "数据采样比例": "10%",
+      "生命周期天数": "365",
+      "缓存开关": "开启"
     },
     {
       "id": 2,
@@ -463,27 +466,27 @@ export const SEED_ROWS: Record<string, EntryRow[]> = {
       "pending": true,
       "abnormal": true,
       "数据集编号": "DATA-0002",
-      "数据集名称": "数据集管理样例2",
-      "来源表名": "数据集管理样例2",
-      "字段列表": "数据集管理样例2",
-      "更新策略": "数据集管理样例2",
-      "数据采样比例": "数据集管理样例2",
-      "生命周期天数": "数据集管理样例2",
-      "缓存开关": "数据集管理样例2"
+      "数据集名称": "客户事实汇总",
+      "来源表名": "dw.customer_fact",
+      "字段列表": "客户编码,客户名称,更新日期,信用额度,是否有效",
+      "更新策略": "每小时增量",
+      "数据采样比例": "20%",
+      "生命周期天数": "180",
+      "缓存开关": "开启"
     },
     {
       "id": 3,
-      "status": "已生效",
-      "pending": false,
+      "status": "草稿",
+      "pending": true,
       "abnormal": false,
       "数据集编号": "DATA-0003",
-      "数据集名称": "数据集管理样例3",
-      "来源表名": "数据集管理样例3",
-      "字段列表": "数据集管理样例3",
-      "更新策略": "数据集管理样例3",
-      "数据采样比例": "数据集管理样例3",
-      "生命周期天数": "数据集管理样例3",
-      "缓存开关": "数据集管理样例3"
+      "数据集名称": "订单明细宽表",
+      "来源表名": "sales.order_detail",
+      "字段列表": "订单号,下单时间,商品数量,成交金额",
+      "更新策略": "每日增量",
+      "数据采样比例": "5%",
+      "生命周期天数": "90",
+      "缓存开关": "关闭"
     }
   ],
   "forecast": [
@@ -624,7 +627,7 @@ export const SEED_ROWS: Record<string, EntryRow[]> = {
       "status": "草稿",
       "pending": true,
       "abnormal": false,
-      "标签编号": "TAG-0001",
+      "标签编号": "TAGS-0001",
       "标签名称": "数据标签样例1",
       "计算表达式": "数据标签样例1",
       "覆盖对象": "数据标签样例1",
@@ -638,7 +641,7 @@ export const SEED_ROWS: Record<string, EntryRow[]> = {
       "status": "待校验",
       "pending": true,
       "abnormal": true,
-      "标签编号": "TAG-0002",
+      "标签编号": "TAGS-0002",
       "标签名称": "数据标签样例2",
       "计算表达式": "数据标签样例2",
       "覆盖对象": "数据标签样例2",
@@ -652,7 +655,7 @@ export const SEED_ROWS: Record<string, EntryRow[]> = {
       "status": "已启用",
       "pending": false,
       "abnormal": false,
-      "标签编号": "TAG-0003",
+      "标签编号": "TAGS-0003",
       "标签名称": "数据标签样例3",
       "计算表达式": "数据标签样例3",
       "覆盖对象": "数据标签样例3",
@@ -669,13 +672,13 @@ export const SEED_ROWS: Record<string, EntryRow[]> = {
       "pending": true,
       "abnormal": false,
       "任务编号": "EXPO-0001",
-      "查询SQL": "数据导出样例1",
-      "导出格式": "数据导出样例1",
-      "字段列表": "数据导出样例1",
-      "分隔符": "数据导出样例1",
-      "编码格式": "EXPO-0001",
-      "压缩方式": "数据导出样例1",
-      "目标路径": "数据导出样例1"
+      "查询SQL": "SELECT * FROM public.customer_profile",
+      "导出格式": "CSV",
+      "字段列表": "客户编码,客户名称,注册日期,信用额度,是否有效",
+      "分隔符": "逗号",
+      "编码格式": "UTF-8",
+      "压缩方式": "不压缩",
+      "目标路径": "/exports/customer_profile"
     },
     {
       "id": 2,
@@ -683,13 +686,13 @@ export const SEED_ROWS: Record<string, EntryRow[]> = {
       "pending": true,
       "abnormal": true,
       "任务编号": "EXPO-0002",
-      "查询SQL": "数据导出样例2",
-      "导出格式": "数据导出样例2",
-      "字段列表": "数据导出样例2",
-      "分隔符": "数据导出样例2",
-      "编码格式": "EXPO-0002",
-      "压缩方式": "数据导出样例2",
-      "目标路径": "数据导出样例2"
+      "查询SQL": "SELECT * FROM dw.customer_fact",
+      "导出格式": "CSV",
+      "字段列表": "客户编码,客户名称,更新日期,信用额度,是否有效",
+      "分隔符": "逗号",
+      "编码格式": "UTF-8",
+      "压缩方式": "ZIP",
+      "目标路径": "/exports/customer_fact"
     },
     {
       "id": 3,
@@ -697,13 +700,13 @@ export const SEED_ROWS: Record<string, EntryRow[]> = {
       "pending": false,
       "abnormal": false,
       "任务编号": "EXPO-0003",
-      "查询SQL": "数据导出样例3",
-      "导出格式": "数据导出样例3",
-      "字段列表": "数据导出样例3",
-      "分隔符": "数据导出样例3",
-      "编码格式": "EXPO-0003",
-      "压缩方式": "数据导出样例3",
-      "目标路径": "数据导出样例3"
+      "查询SQL": "SELECT * FROM sales.order_detail",
+      "导出格式": "Parquet",
+      "字段列表": "订单号,下单时间,商品数量,成交金额",
+      "分隔符": "逗号",
+      "编码格式": "UTF-8",
+      "压缩方式": "GZIP",
+      "目标路径": "/exports/order_detail"
     }
   ],
   "share": [
@@ -794,4 +797,13 @@ export const SEED_ROWS: Record<string, EntryRow[]> = {
       "超时终止": "定时任务样例3"
     }
   ],
+}
+
+// 种子里的数据源配置与样本必须对得上：连接类型从采样数据里取，
+// 避免两边各写一份之后漂移；连接类型与采样数据不是同一技术的配置在数据层会被判失败。
+for (const [sourceId, sample] of Object.entries(SOURCE_SAMPLES)) {
+  const row = (SEED_ROWS.source ?? []).find((item) => Number(item.id) === Number(sourceId))
+  if (row) {
+    row["连接类型"] = sample.connectionType
+  }
 }

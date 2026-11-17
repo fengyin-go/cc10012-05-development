@@ -1,5 +1,6 @@
 import { MODULE_BY_KEY } from '@/data/modules'
 import { allRows, listRows, resetRows, saveRows } from '@/data/local-store'
+import { allReports, checkReportConnection } from '@/data/quality-store'
 import type { ActionResult, EntryRow, ModuleMeta, OverviewResult, PageResult } from '@/data/types'
 
 // 会写进数据的「往回走」动作：命中就把这条记录标成异常态，看板上能一眼看出来。
@@ -23,6 +24,11 @@ export function filterRows(rows: EntryRow[], filters: Record<string, string>): E
   )
 }
 
+/** 断开连接只对已连接的接入配置有意义，避免草稿配置被直接断开。 */
+const ACTION_PRECONDITIONS: Record<string, Record<string, string[]>> = {
+  source: { 断开连接: ['已连接'] },
+}
+
 export function listEntries(key: string, filters: Record<string, string> = {}): PageResult {
   const matched = filterRows(listRows(key), filters)
   return { items: matched, total: matched.length, page: 1, size: matched.length }
@@ -43,6 +49,10 @@ export function runAction(key: string, id: number, action: string): ActionResult
   if (current === target) {
     return { ok: false, message: `${meta.entity}已经是「${target}」，不用重复操作` }
   }
+  const allowed = ACTION_PRECONDITIONS[key]?.[action]
+  if (allowed && !allowed.includes(current)) {
+    return { ok: false, message: `${meta.entity}当前是「${current}」，不能执行「${action}」` }
+  }
   const lastStatus = meta.statuses[meta.statuses.length - 1]
   const updated: EntryRow = {
     ...rows[index],
@@ -61,18 +71,81 @@ export function resetModule(key: string): PageResult {
   return listEntries(key)
 }
 
-export function exportEntries(key: string): { filename: string; content: string } {
+function csvCell(value: unknown): string {
+  const text = String(value ?? '')
+  return /[",\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text
+}
+
+function qualityColumns(key: string): string[] {
+  return key === 'source' ? ['连接状态', '报告版本', '报告状态', '冲突字段数', '最高空值率'] : []
+}
+
+function qualityCells(key: string, row: EntryRow): string[] {
+  if (key !== 'source') {
+    return []
+  }
+  const report = allReports()[String(row.id)]
+  if (!report) {
+    return ['无报告', '—', '—', '—', '—']
+  }
+  const connection = checkReportConnection(report)
+  return [
+    connection.ok ? '已连接' : `不可用（${connection.currentStatus}）`,
+    `v${report.version}`,
+    report.status,
+    String(report.conflictFieldCount),
+    report.maxNullRateText,
+  ]
+}
+
+/** 导出明细跟着列表的筛选条件走：页面上看到哪些行，文件里就是哪些行。 */
+export function exportEntries(
+  key: string,
+  filters: Record<string, string> = {},
+): { filename: string; content: string } {
   const meta = moduleMeta(key)
-  const header = ['编号', ...meta.fields, '当前状态']
-  const lines = [header.join(',')]
-  for (const row of listRows(key)) {
-    lines.push([row.id, ...meta.fields.map((field) => row[field] ?? ''), row.status].join(','))
+  const rows = filterRows(listRows(key), filters)
+  const extra = qualityColumns(key)
+  const header = ['编号', ...meta.fields, '当前状态', ...extra]
+  const lines = [header.map(csvCell).join(',')]
+  for (const row of rows) {
+    lines.push(
+      [row.id, ...meta.fields.map((field) => row[field] ?? ''), row.status, ...qualityCells(key, row)]
+        .map(csvCell)
+        .join(','),
+    )
+  }
+  if (key === 'source' && rows.length > 0) {
+    // 字段质量报告随文件保留：每行接入配置后面附上逐字段结论和样本依据。
+    lines.push('')
+    lines.push('字段质量报告明细')
+    lines.push(['源标识', '源表', '字段', '声明类型', '样本类型分布', '空值率', '类型冲突', '判定说明', '样本来源'].map(csvCell).join(','))
+    for (const row of rows) {
+      const report = allReports()[String(row.id)]
+      if (!report || report.fields.length === 0) {
+        lines.push([String(row["配置编号"] ?? ''), report?.sourceTable ?? '', '—', '—', '—', '—', report ? '失败' : '无报告', report?.failureReason ?? '尚未生成字段质量报告', '—'].map(csvCell).join(','))
+        continue
+      }
+      for (const field of report.fields) {
+        lines.push([
+          report.sourceCode,
+          report.sourceTable,
+          field.field,
+          field.declaredType,
+          field.typeDistribution,
+          field.nullRateText,
+          field.typeConflict ? '是' : '否',
+          field.conflictReason,
+          field.sampleSource,
+        ].map(csvCell).join(','))
+      }
+    }
   }
   return { filename: `${meta.name}-清单.csv`, content: `\uFEFF${lines.join('\n')}` }
 }
 
-export function downloadEntries(key: string): void {
-  const { filename, content } = exportEntries(key)
+export function downloadEntries(key: string, filters: Record<string, string> = {}): void {
+  const { filename, content } = exportEntries(key, filters)
   const blob = new Blob([content], { type: 'text/csv;charset=utf-8' })
   const url = URL.createObjectURL(blob)
   const anchor = document.createElement('a')
